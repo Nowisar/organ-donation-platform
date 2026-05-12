@@ -130,3 +130,13 @@ contract OrganRegistration {
         return recipientList;
     }
 }
+
+// Task 6 Edge Case: Explicitly model Doctor Refusal / Expiry
+function updateRecipientStatus(address _patient, Status _newStatus) external onlyHospital {
+    require(recipients[_p].isRegistered, "Patient not found");
+    
+    // This handles Doctor Refusal or Expiry by setting status to Cancelled
+    recipients[_p].status = _newStatus;
+    
+    emit StatusUpdated(_patient, _newStatus);
+}
