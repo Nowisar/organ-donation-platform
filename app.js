@@ -1,3 +1,5 @@
+// Contract deployed on Sepolia Testnet
+// View on Etherscan: https://sepolia.etherscan.io/address/0xe7a503B2f605aD5180BcdcbC05CB5b70a4E36253
 const contractAddress = "0xe7a503B2f605aD5180BcdcbC05CB5b70a4E36253";
 const abi = [
     "function registerDonor(uint8 bloodType, uint8 organType, string location, address hospital) external"
