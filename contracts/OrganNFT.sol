@@ -11,7 +11,7 @@ contract OrganDonationNFT is ERC721, Ownable {
 
     uint256 private _nextTokenId;
 
-    // Struct لحفظ بيانات الشهادة
+    // Struct to store certificate data
     struct CertData {
         string certType; // "Donor" or "Recipient"
         string organType;
@@ -21,7 +21,7 @@ contract OrganDonationNFT is ERC721, Ownable {
 
     mapping(uint256 => CertData) public certificateDetails;
     
-    // تحديد الكونتراكتس اللي مسموح ليها تعمل Mint (زي كونتراكت 1 و 2)
+    // Mapping to track contracts authorized to mint (e.g., Registration and Matching contracts)
     mapping(address => bool) public authorizedMinters;
 
     event MinterAdded(address minter);
@@ -36,14 +36,14 @@ contract OrganDonationNFT is ERC721, Ownable {
         _;
     }
 
-    // دالة لإضافة كونتراكت التسجيل والمطابقة كـ Minters معتمدين
+    // Function to add Registration and Matching contracts as authorized Minters
     function setMinter(address minter, bool status) external onlyOwner {
         authorizedMinters[minter] = status;
         if (status) emit MinterAdded(minter);
         else emit MinterRemoved(minter);
     }
 
-    // Task 2: دالة إصدار شهادة للمتبرع
+    // Task 2: Function to issue a certificate for the donor
     function mintDonorNFT(
         address to,
         string memory _organType,
@@ -63,7 +63,7 @@ contract OrganDonationNFT is ERC721, Ownable {
         return tokenId;
     }
 
-    // Task 3: دالة إصدار شهادة للمريض بعد الزرع
+    // Task 3: Function to issue a certificate for the recipient after transplant
     function mintTransplantNFT(
         address to,
         string memory _organType,
@@ -83,10 +83,10 @@ contract OrganDonationNFT is ERC721, Ownable {
         return tokenId;
     }
 
-    // Task 5: تطبيق Soulbound Logic عشان الشهادة متتنقلش
+    // Task 5: Implement Soulbound Logic to prevent certificate transfer
     function _update(address to, uint256 tokenId, address auth) internal virtual override returns (address) {
         address from = _ownerOf(tokenId);
-        // السماح بالـ Minting والـ Burning فقط، ومنع الـ Transfer بين المحافظ
+        // Allow Minting and Burning only, and prevent Transfers between wallets
         require(from == address(0) || to == address(0), "Soulbound: Certificate is non-transferable");
         return super._update(to, tokenId, auth);
     }
@@ -97,7 +97,7 @@ contract OrganDonationNFT is ERC721, Ownable {
 
         CertData memory data = certificateDetails[tokenId];
 
-        // تصميم SVG للشهادة بتدرجات الـ Pink والـ Purple
+        // SVG design for the certificate using Pink and Purple gradients
         string memory svg = string(abi.encodePacked(
             '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">',
             '<defs>',
@@ -114,7 +114,7 @@ contract OrganDonationNFT is ERC721, Ownable {
             '</svg>'
         ));
 
-        // تحويل الـ JSON والـ SVG لـ Base64
+        // Encode the JSON and SVG to Base64
         string memory json = Base64.encode(
             bytes(string(abi.encodePacked(
                 '{"name": "', data.certType, ' #', tokenId.toString(), '",',
